@@ -10,43 +10,43 @@ import evael.utils.Size;
 
 void main()
 {
-	auto windowSettings = WindowSettings();
-	windowSettings.title = "My D Game";
+    auto windowSettings = WindowSettings();
+    windowSettings.title = "My D Game";
     windowSettings.fullscreen = false;
     windowSettings.resolution = Size!int(1024, 768);
 
-	auto game = new Game(windowSettings);
+    auto game = new Game(windowSettings);
 
-	game.setGameState!(BaseGameState);
-	game.run();
-	game.dispose();
+    game.setGameState!(BaseGameState);
+    game.run();
+    game.dispose();
 }
 
 class BaseGameState : GameState
 {
-	/**
-	 * Processes game rendering.
-	 */
-	public override void update(in float interpolation)
-	{
+    /**
+     * Processes game rendering.
+     */
+    public override void update(in float interpolation)
+    {
 
-	}
+    }
 
-	/**
-	 * Processes game logic at fixed time rate.
-	 */
-	public override void fixedUpdate()
-	{
+    /**
+     * Processes game logic at fixed time rate.
+     */
+    public override void fixedUpdate()
+    {
 
-	}
+    }
 
-	public override void onInit(Variant[] params = null)
-	{
+    public override void onInit(Variant[] params = null)
+    {
 
-	}
+    }
 
-	public override void onExit()
-	{
-		
-	}
+    public override void onExit()
+    {
+        
+    }
 }
