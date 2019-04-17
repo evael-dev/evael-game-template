@@ -1,0 +1,14 @@
+.dub
+docs.json
+__dummy.html
+docs/
+evael-game-template.so
+evael-game-template.dylib
+evael-game-template.dll
+evael-game-template.a
+evael-game-template.lib
+evael-game-template-test-*
+*.exe
+*.o
+*.obj
+*.lst

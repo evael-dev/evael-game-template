@@ -1,0 +1,14 @@
+{
+	"name": "evael-game-template",
+	"authors": [
+		"Your Name"
+	],
+	"description": "Evael engine game template.",
+	"copyright": "Copyright © 2019, Your Name",
+	"dependencies": {
+		"evael": "~>0.0.1"
+
+	},
+	"targetName": "game",
+	"targetPath": "./dist"
+}
