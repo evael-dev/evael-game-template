@@ -6,7 +6,7 @@ import evael.core.GameState;
 import evael.system.WindowSettings;
 import evael.system.GLContextSettings;
 
-import evael.utils.Size;
+import evael.utils;
 
 void main()
 {
@@ -29,7 +29,7 @@ class BaseGameState : GameState
      */
     public override void update(in float interpolation)
     {
-
+        this.m_graphicsDevice.beginScene(Color.LightGrey);
     }
 
     /**
