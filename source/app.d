@@ -50,7 +50,7 @@ class BaseGameState : GameState
     {
         this.m_graphicsDevice.initializeOrthographicProjection(0, 1024, 0, 768);
         this.m_game.guiManager.setFont("./medias/ui/fonts/Roboto-Regular.ttf", 18);
-        // this.m_game.guiManager.setStyle(Style.Blue);
+         this.m_game.guiManager.setStyle(Style.Blue);
         
          w = this.m_game.guiManager.createWindow()
             .title("lol")
