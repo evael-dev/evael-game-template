@@ -1,15 +1,15 @@
 import std.stdio;
 
-import evael.core.Game;
-import evael.core.GameState;
+import evael.core.game;
+import evael.core.game_state;
 
-import evael.system.WindowSettings;
-import evael.system.GLContextSettings;
+import evael.system.window_settings;
+import evael.system.gl_context_settings;
 
 import evael.utils;
-import evael.graphics.GL;;
+import evael.graphics.gl;
+import evael.graphics.gui;
 
-import evael.graphics.gui2;
 import bindbc.glfw;
 
 void main()
