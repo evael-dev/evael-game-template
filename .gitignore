@@ -12,3 +12,4 @@ evael-game-template-test-*
 *.o
 *.obj
 *.lst
+.vscode/
