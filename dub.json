@@ -12,7 +12,4 @@
 	"targetName": "game",
 	"targetPath": "./dist",
 	"workingDirectory": "./dist",
-	"versions": 
-	[ 
-	]
 }
