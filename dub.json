@@ -11,5 +11,5 @@
 	},
 	"targetName": "game",
 	"targetPath": "./dist",
-	"workingDirectory": "./dist",
+	"workingDirectory": "./dist"
 }
