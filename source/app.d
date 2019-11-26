@@ -32,8 +32,11 @@ class BaseGameState : GameState
 
     struct PC
     {
-        @ShaderAttribute(0, AttributeType.Float, 3, false)
+        @ShaderAttribute(0, AttributeType.Float, 3, No.normalized)
         float[3] position;
+
+        @ShaderAttribute(1, AttributeType.UByte, 4, Yes.normalized)
+        ubyte[4] color;
     }
 
     /**
@@ -42,14 +45,12 @@ class BaseGameState : GameState
 	public this()
 	{
         this.gd = MemoryHelper.create!GraphicsDevice();
-        this.command = this.gd.createCommand();
-
 
         auto vb = this.gd.createBuffer(BufferType.Vertex, PC.sizeof * 3);
 
 
 //        PC[3] data = [PC([0, 0], [1, 0, 0]), PC([1, 1], [0, 1, 0]), PC([1, 0], [0, 0, 1])];
-        PC[3] data = [PC([0, 0, 0]), PC([1, 1, 0]), PC([1, 0, 0])];
+        PC[3] data = [PC([0, 0, 0], [255, 0, 0, 255]), PC([1, 1, 0], [0, 255, 0, 120]), PC([1, 0, 0], [0, 0, 255, 50])];
 
         this.gd.updateBuffer(vb, 0, PC.sizeof * 3, &data);
 
@@ -57,13 +58,17 @@ class BaseGameState : GameState
 q{
     #version 330 core
     layout (location = 0) in vec3 aPos; // the position variable has attribute position 0
+    layout (location = 1) in vec4 color; // the position variable has attribute position 0
+    layout (location = 2) in vec2 in_TexCoord;
     
     out vec4 vertexColor; // specify a color output to the fragment shader
+    out vec2 texCoord;
 
     void main()
     {
-        gl_Position = vec4(aPos, 1.0); // see how we directly give a vec3 to vec4's constructor
-        vertexColor = vec4(0.5, 0.0, 0.0, 1.0); // set the output variable to a dark-red color
+        gl_Position = vec4(aPos, 1.0); // see  how we directly give a vec3 to vec4's constructor
+        vertexColor = color; // set the output variable to a dark-red color
+        texCoord = in_TexCoord;
     }
 },
 q{ 
@@ -71,16 +76,20 @@ q{
     out vec4 FragColor;
     
     in vec4 vertexColor; // the input variable from the vertex shader (same name and same type)  
+    in vec2 texCoord;
+
+    uniform sampler2D tex;
 
     void main()
     {
-        FragColor = vertexColor;
+        FragColor = texture(tex, texCoord) * vertexColor;
     }
 });
         
         auto pipeline = new GraphicsPipeline();
         pipeline.shader = shader; 
 
+        this.command = this.gd.createCommand();
         this.command.vertexBuffer = vb;
         this.command.pipeline = pipeline;
 
@@ -96,10 +105,9 @@ q{
      */
     public override void update(in float interpolation)
     {
-        this.command.clearColor(Color.Red);
+        this.command.clearColor(Color.Blue);
 
         this.command.draw!PC(0, 3);
-       // this.command.lol();
     }
 
     /**
