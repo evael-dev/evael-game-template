@@ -1,19 +1,19 @@
 {
-	"name": "evael-game-template",
 	"authors": [
 		"Your Name"
 	],
-	"description": "Evael engine game template.",
 	"copyright": "Copyright © 2019, Your Name",
 	"dependencies": {
-		"evael": "~>0.0.3"
-
+		"evael": "~>0.0.3",
+		"sumtype": "~>0.9.4"
 	},
+	"description": "Evael engine game template.",
+	"name": "evael-game-template",
 	"targetName": "game",
 	"targetPath": "./dist",
-	"workingDirectory": "./dist",
 	"versions": [
-		"GL_RENDERER",
-		"GL_DEBUG"
-	]
+		"VK_RENDERER",
+		"VK_DEBUG"
+	],
+	"workingDirectory": "./dist"
 }

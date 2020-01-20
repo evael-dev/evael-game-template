@@ -5,8 +5,10 @@ import evael.core.game_state;
 
 import evael.system.window_settings;
 import evael.system.gl_context_settings;
+import evael.system.asset_loader;
 
 import evael.utils;
+import evael.utils.math;
 
 void main()
 {
@@ -27,77 +29,72 @@ import evael.lib.memory;
 
 class BaseGameState : GameState
 {
-    private GraphicsDevice gd;
-    private GraphicsCommand command;
+    private Device gd;
+    private Command command, c2;
 
-    struct PC
+
+    struct CameraData
     {
-        @ShaderAttribute(0, AttributeType.Float, 3, No.normalized)
-        float[3] position;
-
-        @ShaderAttribute(1, AttributeType.UByte, 4, Yes.normalized)
-        ubyte[4] color;
+        mat4 view, projection;
     }
+
+    private UniformResource!CameraData cameraUniform;
 
     /**
 	 * GameState constructor.
 	 */
 	public this()
 	{
-        this.gd = MemoryHelper.create!GraphicsDevice();
+        this.gd = MemoryHelper.create!Device();
 
-        auto vb = this.gd.createBuffer(BufferType.Vertex, PC.sizeof * 3);
+        /*auto vb = new VertexBuffer(Vertex3PositionColorTexture.sizeof * 3, 
+        [
+            Vertex3PositionColorTexture(vec3(-200, 0, 0), Color.White, vec2(0, 0)), 
+            Vertex3PositionColorTexture(vec3(0, 200, 0), Color.White, vec2(0, 1)), 
+            Vertex3PositionColorTexture(vec3(200, 0, 0), Color.White, vec2(1, 0))
+        ].ptr);
 
 
-//        PC[3] data = [PC([0, 0], [1, 0, 0]), PC([1, 1], [0, 1, 0]), PC([1, 0], [0, 0, 1])];
-        PC[3] data = [PC([0, 0, 0], [255, 0, 0, 255]), PC([1, 1, 0], [0, 255, 0, 120]), PC([1, 0, 0], [0, 0, 255, 50])];
+        auto vb2 = new VertexBuffer(Vertex3PositionColor.sizeof * 3, 
+        [
+            Vertex3PositionColor(vec3(-200, 0, 0), Color.White), 
+            Vertex3PositionColor(vec3(0, 200, 0), Color.White), 
+            Vertex3PositionColor(vec3(200, 0, 0), Color.White)
+        ].ptr);
 
-        this.gd.updateBuffer(vb, 0, PC.sizeof * 3, &data);
+        auto cameraEye = vec3(-45 + 0, 45 + 0, 45 + 0), 
+			cameraTarget = vec3(0, 0, 0),
+			cameraUp = vec3(0, 1, 0);
 
-        auto shader = this.gd.createShader(
-q{
-    #version 330 core
-    layout (location = 0) in vec3 aPos; // the position variable has attribute position 0
-    layout (location = 1) in vec4 color; // the position variable has attribute position 0
-    layout (location = 2) in vec2 in_TexCoord;
-    
-    out vec4 vertexColor; // specify a color output to the fragment shader
-    out vec2 texCoord;
-
-    void main()
-    {
-        gl_Position = vec4(aPos, 1.0); // see  how we directly give a vec3 to vec4's constructor
-        vertexColor = color; // set the output variable to a dark-red color
-        texCoord = in_TexCoord;
-    }
-},
-q{ 
-    #version 330 core
-    out vec4 FragColor;
-    
-    in vec4 vertexColor; // the input variable from the vertex shader (same name and same type)  
-    in vec2 texCoord;
-
-    uniform sampler2D tex;
-
-    void main()
-    {
-        FragColor = texture(tex, texCoord) * vertexColor;
-    }
-});
+        auto cameraData = CameraData(
+            lookAtMatrix(cameraEye, cameraTarget, cameraUp),
+            orthoMatrix(cast(float)-512, cast(float)512, cast(float)-384, cast(float)384, cast(float)-2000, cast(float)2000)
+        );   
         
-        auto pipeline = new GraphicsPipeline();
-        pipeline.shader = shader; 
+        auto pipeline = new Pipeline();
+        pipeline.shader = AssetLoader.getInstance().load!Shader("./medias/shaders/vertex_color_texture");
+        pipeline.addTextureResource(AssetLoader.getInstance().load!Texture("./medias/textures/happy.png"));
+        
+        this.cameraUniform = pipeline.addUniformResource("cameraData", cameraData);
+        this.cameraUniform.view = cameraData.view;
+        this.cameraUniform.projection = cameraData.projection;
+        this.cameraUniform.update();
 
-        this.command = this.gd.createCommand();
+        auto modelUniform = pipeline.addUniformResource("modelData", translationMatrix(vec3(0, 140, 0)));
+
+        this.command = new Command(pipeline);
         this.command.vertexBuffer = vb;
-        this.command.pipeline = pipeline;
 
-        debug
-        {
-            import std.stdio;
-            writeln(vb);
-        }
+        auto p2 = new Pipeline();
+        p2.shader = AssetLoader.getInstance().load!Shader("./medias/shaders/vertex_color");
+        p2.addUniformResource("modelData", translationMatrix(vec3(0, 30, 0)));
+        p2.addUniformResource("cameraData",  CameraData(
+            lookAtMatrix(cameraEye, cameraTarget, cameraUp),
+            orthoMatrix(cast(float)-512, cast(float)512, cast(float)-384, cast(float)384, cast(float)-2000, cast(float)2000)
+        ));
+
+        this.c2 = new Command(p2);
+        this.c2.vertexBuffer = vb2;*/
 	}
 
     /**
@@ -105,9 +102,11 @@ q{
      */
     public override void update(in float interpolation)
     {
-        this.command.clearColor(Color.Blue);
+        this.gd.beginFrame(Color.Blue);
 
-        this.command.draw!PC(0, 3);
+       /* this.command.draw!Vertex3PositionColorTexture(0, 3);
+        this.c2.draw!Vertex3PositionColor(0, 3);*/
+        this.gd.endFrame();
     }
 
     /**
