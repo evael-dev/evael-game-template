@@ -1,36 +1,26 @@
 import std.stdio;
 
-import evael.core.game;
-import evael.core.game_state;
-
-import evael.system.window_settings;
-import evael.system.gl_context_settings;
+import evael;
 import evael.system.asset_loader;
-
 import evael.utils;
 import evael.utils.math;
-
-void main()
-{
-    auto windowSettings = WindowSettings();
-    windowSettings.title = "My D Game";
-    windowSettings.fullscreen = false;
-    windowSettings.resolution = Size!int(1024, 768);
-
-    auto game = new Game(windowSettings);
-
-    game.setGameState!(BaseGameState);
-    game.run();
-    game.dispose();
-}
-
 import evael.renderer;
 import evael.lib.memory;
 
+void main()
+{
+    auto game = MemoryHelper.create!Game();
+
+    game.setGameState!(BaseGameState);
+    game.run();
+
+    MemoryHelper.dispose(game);
+}
+
+
 class BaseGameState : GameState
 {
-    private Device gd;
-    private Command command, c2;
+    private GraphicsCommand command, c2;
 
 
     struct CameraData
@@ -43,10 +33,9 @@ class BaseGameState : GameState
     /**
 	 * GameState constructor.
 	 */
+    @nogc
 	public this()
 	{
-        this.gd = MemoryHelper.create!Device();
-
         /*auto vb = new VertexBuffer(Vertex3PositionColorTexture.sizeof * 3, 
         [
             Vertex3PositionColorTexture(vec3(-200, 0, 0), Color.White, vec2(0, 0)), 
@@ -102,11 +91,11 @@ class BaseGameState : GameState
      */
     public override void update(in float interpolation)
     {
-        this.gd.beginFrame(Color.Blue);
+       // this.gd.beginFrame(Color.Blue);
 
        /* this.command.draw!Vertex3PositionColorTexture(0, 3);
         this.c2.draw!Vertex3PositionColor(0, 3);*/
-        this.gd.endFrame();
+        //this.gd.endFrame();
     }
 
     /**

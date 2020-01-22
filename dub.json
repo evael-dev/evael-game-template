@@ -12,8 +12,8 @@
 	"targetName": "game",
 	"targetPath": "./dist",
 	"versions": [
-		"VK_RENDERER",
-		"VK_DEBUG"
+		"GL_RENDERER",
+		"GL_DEBUG"
 	],
 	"workingDirectory": "./dist"
 }
